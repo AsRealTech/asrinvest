@@ -1,11 +1,11 @@
 import {
   useAdminListTransactions, getAdminListTransactionsQueryKey,
-  useApproveTransaction, useRejectTransaction,
+  useApproveTransaction, useRejectTransaction, useDeleteTransaction,
 } from "@workspace/api-client-react";
 import { useQueryClient } from "@tanstack/react-query";
 import { AdminLayout } from "@/components/layout/AdminLayout";
 import { format } from "date-fns";
-import { CheckCircle, XCircle, ArrowDownCircle, ArrowUpCircle } from "lucide-react";
+import { CheckCircle, XCircle, ArrowDownCircle, ArrowUpCircle, Trash2 } from "lucide-react";
 import { customFetch } from "@/lib/api-client/custom-fetch";
 import { getToken } from "@/lib/auth";
 
@@ -30,6 +30,7 @@ export default function Transactions() {
   });
   const approveMutation = useApproveTransaction();
   const rejectMutation = useRejectTransaction();
+  const deleteMutation = useDeleteTransaction();
 
   const handleApprove = async (id: number) => {
     if (!confirm("Approve this transaction?")) return;
@@ -48,6 +49,17 @@ export default function Transactions() {
       queryClient.invalidateQueries({ queryKey: getAdminListTransactionsQueryKey() });
     } catch (err: any) {
       alert(err?.data?.error || "Failed to reject");
+    }
+  };
+
+  const handleDeleteCompleted = async (id: number) => {
+    if (!confirm("Delete this completed transaction to save space?")) return;
+    try {
+      await deleteMutation.mutateAsync({ id });
+      queryClient.invalidateQueries({ queryKey: getAdminListTransactionsQueryKey() });
+      alert("Completed transaction deleted");
+    } catch (err: any) {
+      alert(err?.data?.error || err?.message || "Failed to delete completed transaction");
     }
   };
 
@@ -162,7 +174,7 @@ export default function Transactions() {
                         )}
                       </td>
                       <td className="px-4 py-3 text-center"><StatusBadge status={tx.status} /></td>
-                      <td className="px-4 py-3 text-right text-xs text-muted-foreground">
+                                      <td className="px-4 py-3 text-right text-xs text-muted-foreground">
                         {format(new Date(tx.createdAt), "MMM d, yyyy")}
                       </td>
                       <td className="px-4 py-3 text-right">
@@ -185,6 +197,15 @@ export default function Transactions() {
                               <XCircle className="w-4 h-4" />
                             </button>
                           </div>
+                        )}
+                        {tx.status === "approved" || tx.status === "rejected" && (
+                          <button
+                            onClick={() => handleDeleteCompleted(tx.id)}
+                            className="p-1.5 hover:bg-red-500/10 rounded text-muted-foreground hover:text-red-400 transition-colors"
+                            title="Delete completed transaction"
+                          >
+                            <Trash2 className="w-4 h-4" />
+                          </button>
                         )}
                       </td>
                     </tr>

@@ -345,44 +345,6 @@ router.post("/admin/investments/:id/complete-now", requireAdmin, async (req, res
         newBalance,
     });
 });
-// Admin: delete completed investment
-router.delete("/admin/investments/:id", requireAdmin, async (req, res) => {
-    const params = ApproveInvestmentParams.safeParse(req.params);
-    if (!params.success) {
-        res.status(400).json({ error: "Invalid investment ID" });
-        return;
-    }
-    const [inv] = await db
-        .select()
-        .from(investmentsTable)
-        .where(and(eq(investmentsTable.id, params.data.id), eq(investmentsTable.status, "completed")));
-    if (!inv) {
-        res.status(404).json({ error: "Completed investment not found" });
-        return;
-    }
-    await db.delete(investmentsTable).where(eq(investmentsTable.id, params.data.id));
-    res.json({ message: "Completed investment deleted" });
-});
-
-// Admin: delete rejected investment
-router.delete("/admin/investments/:id", requireAdmin, async (req, res) => {
-    const params = ApproveInvestmentParams.safeParse(req.params);
-    if (!params.success) {
-        res.status(400).json({ error: "Invalid investment ID" });
-        return;
-    }
-    const [inv] = await db
-        .select()
-        .from(investmentsTable)
-        .where(and(eq(investmentsTable.id, params.data.id), eq(investmentsTable.status, "rejected")));
-    if (!inv) {
-        res.status(404).json({ error: "Rejected investment not found" });
-        return;
-    }
-    await db.delete(investmentsTable).where(eq(investmentsTable.id, params.data.id));
-    res.json({ message: "Rejected investment deleted" });
-});
-
 // Admin: create transaction for user
 router.post("/admin/transactions", requireAdmin, async (req, res) => {
     const { userId, amount, type } = req.body;

@@ -64,6 +64,8 @@ export default function UserDetails() {
     provinceState: "",
     postalZipCode: "",
     phoneNumber: "",
+    password: "",
+    confirmPassword: "",
   });
   const [bonusAmount, setBonusAmount] = useState("");
   const [transactionType, setTransactionType] = useState("bonus");
@@ -102,6 +104,8 @@ export default function UserDetails() {
         provinceState: user.provinceState || "",
         postalZipCode: user.postalZipCode || "",
         phoneNumber: user.phoneNumber || "",
+        password: "",
+        confirmPassword: "",
       });
     }
   }, [user]);
@@ -119,6 +123,11 @@ export default function UserDetails() {
     if (!userId) return;
     setError("");
 
+    if (form.password && form.password !== form.confirmPassword) {
+      setError("Passwords do not match.");
+      return;
+    }
+
     try {
       await updateMutation.mutateAsync({
         id: userId,
@@ -127,6 +136,7 @@ export default function UserDetails() {
           email: form.email,
           balance: parseFloat(form.balance),
           status: form.status,
+          password: form.password ? form.password : undefined,
           title: form.title || undefined,
           firstName: form.firstName || undefined,
           lastName: form.lastName || undefined,
@@ -144,6 +154,7 @@ export default function UserDetails() {
           phoneNumber: form.phoneNumber || undefined,
         },
       });
+      setForm((prev) => ({ ...prev, password: "", confirmPassword: "" }));
       invalidateUser();
     } catch (err: any) {
       setError(err?.data?.error || "Unable to save user");
@@ -427,6 +438,29 @@ export default function UserDetails() {
                       <option value="active">Active</option>
                       <option value="suspended">Suspended</option>
                     </select>
+                  </div>
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-sm font-medium text-foreground mb-1.5">New Password</label>
+                      <small className="text-red-500">Leave blank to keep current password</small>
+                      <input
+                        type="password"
+                        value={form.password}
+                        onChange={(e) => setForm((prev) => ({ ...prev, password: e.target.value }))}
+                        className="w-full bg-input border border-border rounded-lg px-3 py-2.5 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-ring"
+                        placeholder="Leave blank to keep current password"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-foreground mb-1.5">Confirm Password</label>
+                      <input
+                        type="password"
+                        value={form.confirmPassword}
+                        onChange={(e) => setForm((prev) => ({ ...prev, confirmPassword: e.target.value }))}
+                        className="w-full bg-input border border-border rounded-lg px-3 py-2.5 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-ring"
+                        placeholder="Repeat new password"
+                      />
+                    </div>
                   </div>
                   {/* Personal Information Section */}
                   <div className="pt-6 border-t border-border">

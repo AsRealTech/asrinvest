@@ -112,6 +112,7 @@ export interface UpdateUserBody {
   email?: string;
   balance?: number;
   status?: string;
+  password?: string;
   title?: string | null;
   firstName?: string | null;
   lastName?: string | null;

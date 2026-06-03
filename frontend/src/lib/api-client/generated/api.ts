@@ -1734,6 +1734,89 @@ export const useRejectInvestment = <
 };
 
 /**
+ * @summary Delete a completed investment (admin)
+ */
+export const getDeleteInvestmentUrl = (id: number) => {
+  return `${import.meta.env.VITE_API_URL}/api/admin/investments/${id}`;
+};
+
+export const deleteInvestment = async (
+  id: number,
+  options?: RequestInit,
+): Promise<void> => {
+  return customFetch<void>(getDeleteInvestmentUrl(id), {
+    ...options,
+    method: "DELETE",
+  });
+};
+
+export const getDeleteInvestmentMutationOptions = <
+  TError = ErrorType<unknown>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof deleteInvestment>>,
+    TError,
+    { id: number },
+    TContext
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof deleteInvestment>>,
+  TError,
+  { id: number },
+  TContext
+> => {
+  const mutationKey = ["deleteInvestment"];
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation &&
+      "mutationKey" in options.mutation &&
+      options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof deleteInvestment>>,
+    { id: number }
+  > = (props) => {
+    const { id } = props ?? {};
+
+    return deleteInvestment(id, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type DeleteInvestmentMutationResult = NonNullable<
+  Awaited<ReturnType<typeof deleteInvestment>>
+>;
+export type DeleteInvestmentMutationError = ErrorType<unknown>;
+
+/**
+ * @summary Delete a completed investment (admin)
+ */
+export const useDeleteInvestment = <
+  TError = ErrorType<unknown>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof deleteInvestment>>,
+    TError,
+    { id: number },
+    TContext
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}): UseMutationResult<
+  Awaited<ReturnType<typeof deleteInvestment>>,
+  TError,
+  { id: number },
+  TContext
+> => {
+  return useMutation(getDeleteInvestmentMutationOptions(options));
+};
+
+/**
  * @summary List current user transactions
  */
 export const getListMyTransactionsUrl = () => {
@@ -2221,6 +2304,89 @@ export const useRejectTransaction = <
   TContext
 > => {
   return useMutation(getRejectTransactionMutationOptions(options));
+};
+
+/**
+ * @summary Delete a completed transaction (admin)
+ */
+export const getDeleteTransactionUrl = (id: number) => {
+  return `${import.meta.env.VITE_API_URL}/api/admin/transactions/${id}`;
+};
+
+export const deleteTransaction = async (
+  id: number,
+  options?: RequestInit,
+): Promise<void> => {
+  return customFetch<void>(getDeleteTransactionUrl(id), {
+    ...options,
+    method: "DELETE",
+  });
+};
+
+export const getDeleteTransactionMutationOptions = <
+  TError = ErrorType<unknown>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof deleteTransaction>>,
+    TError,
+    { id: number },
+    TContext
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof deleteTransaction>>,
+  TError,
+  { id: number },
+  TContext
+> => {
+  const mutationKey = ["deleteTransaction"];
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation &&
+      "mutationKey" in options.mutation &&
+      options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof deleteTransaction>>,
+    { id: number }
+  > = (props) => {
+    const { id } = props ?? {};
+
+    return deleteTransaction(id, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type DeleteTransactionMutationResult = NonNullable<
+  Awaited<ReturnType<typeof deleteTransaction>>
+>;
+export type DeleteTransactionMutationError = ErrorType<unknown>;
+
+/**
+ * @summary Delete a completed transaction (admin)
+ */
+export const useDeleteTransaction = <
+  TError = ErrorType<unknown>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof deleteTransaction>>,
+    TError,
+    { id: number },
+    TContext
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}): UseMutationResult<
+  Awaited<ReturnType<typeof deleteTransaction>>,
+  TError,
+  { id: number },
+  TContext
+> => {
+  return useMutation(getDeleteTransactionMutationOptions(options));
 };
 
 /**

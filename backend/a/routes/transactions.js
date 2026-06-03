@@ -222,56 +222,6 @@ router.get("/admin/transactions", requireAdmin, async (_req, res) => {
     })));
 });
 
-// Admin: delete completed transaction
-router.delete("/admin/transactions/:id", requireAdmin, async (req, res) => {
-    const params = ApproveTransactionParams.safeParse(req.params);
-    if (!params.success) {
-        res.status(400).json({ error: "Invalid transaction ID" });
-        return;
-    }
-
-    const [tx] = await db
-        .select()
-        .from(transactionsTable)
-        .where(and(eq(transactionsTable.id, params.data.id), eq(transactionsTable.status, "completed")));
-
-    if (!tx) {
-        res.status(404).json({ error: "Completed transaction not found" });
-        return;
-    }
-
-    await db
-        .delete(transactionsTable)
-        .where(eq(transactionsTable.id, params.data.id));
-
-    res.json({ message: "Completed transaction deleted" });
-});
-
-// Admin: delete rejected transaction
-router.delete("/admin/transactions/:id", requireAdmin, async (req, res) => {
-    const params = ApproveTransactionParams.safeParse(req.params);
-    if (!params.success) {
-        res.status(400).json({ error: "Invalid transaction ID" });
-        return;
-    }
-
-    const [tx] = await db
-        .select()
-        .from(transactionsTable)
-        .where(and(eq(transactionsTable.id, params.data.id), eq(transactionsTable.status, "rejected")));
-
-    if (!tx) {
-        res.status(404).json({ error: "Rejected transaction not found" });
-        return;
-    }
-
-    await db
-        .delete(transactionsTable)
-        .where(eq(transactionsTable.id, params.data.id));
-
-    res.json({ message: "Rejected transaction deleted" });
-});
-
 // Admin: delete uploaded deposit receipt
 router.delete("/admin/transactions/:id/receipt", requireAdmin, async (req, res) => {
     const params = RejectTransactionParams.safeParse(req.params);

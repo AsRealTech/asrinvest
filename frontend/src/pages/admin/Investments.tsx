@@ -1,11 +1,11 @@
 import {
   useAdminListInvestments, getAdminListInvestmentsQueryKey,
-  useApproveInvestment, useRejectInvestment,
+  useApproveInvestment, useRejectInvestment, useDeleteInvestment,
 } from "@workspace/api-client-react";
 import { useQueryClient } from "@tanstack/react-query";
 import { AdminLayout } from "@/components/layout/AdminLayout";
 import { format } from "date-fns";
-import { CheckCircle, XCircle, Clock } from "lucide-react";
+import { CheckCircle, XCircle, Clock, Trash2 } from "lucide-react";
 import { useState } from "react";
 import { getToken } from "@/lib/auth";
 
@@ -32,6 +32,7 @@ export default function AdminInvestments() {
   });
   const approveMutation = useApproveInvestment();
   const rejectMutation = useRejectInvestment();
+  const deleteMutation = useDeleteInvestment();
 
   const handleApprove = async (id: number) => {
     try {
@@ -74,6 +75,17 @@ export default function AdminInvestments() {
       alert(err.message || "Failed to complete investment");
     } finally {
       setCompleteLoading(null);
+    }
+  };
+
+  const handleDeleteCompleted = async (id: number) => {
+    if (!confirm("Delete this completed investment to save space?")) return;
+    try {
+      await deleteMutation.mutateAsync({ id });
+      queryClient.invalidateQueries({ queryKey: getAdminListInvestmentsQueryKey() });
+      alert("Completed investment deleted");
+    } catch (err: any) {
+      alert(err?.data?.error || err?.message || "Failed to delete completed investment");
     }
   };
 
@@ -148,6 +160,15 @@ export default function AdminInvestments() {
                             title="Complete Now & Refund"
                           >
                             <Clock className="w-4 h-4" />
+                          </button>
+                        )}
+                        {inv.status === "completed" && (
+                          <button
+                            onClick={() => handleDeleteCompleted(inv.id)}
+                            className="p-1.5 hover:bg-red-500/10 rounded text-muted-foreground hover:text-red-400"
+                            title="Delete completed investment"
+                          >
+                            <Trash2 className="w-4 h-4" />
                           </button>
                         )}
                       </td>

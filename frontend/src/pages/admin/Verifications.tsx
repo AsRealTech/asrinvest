@@ -414,7 +414,7 @@ export default function AdminVerificationsPage() {
                                 </div>
                               ) : (
                                 <img
-                                  src={"/api/verification-documents/" + detail.idDocumentUrl}
+                                  src={`${import.meta.env.VITE_API_URL}/api/verification-documents/${detail.idDocumentUrl}`}
                                   alt="ID Document"
                                   className="w-full h-24 object-cover rounded border border-border"
                                   onError={(e) => {
@@ -436,7 +436,7 @@ export default function AdminVerificationsPage() {
                           <div className="flex gap-2 items-center">
                             {detail.idDocumentUrl && (
                               <a
-                                href={"/api/verification-documents/" + detail.idDocumentUrl}
+                                href={`${import.meta.env.VITE_API_URL}/api/verification-documents/${detail.idDocumentUrl}`}
                                 target="_blank"
                                 rel="noopener noreferrer"
                                 className="flex items-center gap-2 text-sm text-blue-600 hover:underline"
@@ -467,7 +467,7 @@ export default function AdminVerificationsPage() {
                                 </div>
                               ) : (
                                 <img
-                                  src={"/api/verification-documents/" + detail.selfieUrl}
+                                  src={`${import.meta.env.VITE_API_URL}/api/verification-documents/${detail.selfieUrl}`}
                                   alt="Selfie"
                                   className="w-full h-24 object-cover rounded border border-border"
                                   onError={(e) => {
@@ -489,7 +489,7 @@ export default function AdminVerificationsPage() {
                           <div className="flex gap-2 items-center">
                             {detail.selfieUrl && (
                               <a
-                                href={"/api/verification-documents/" + detail.selfieUrl}
+                                href={`${import.meta.env.VITE_API_URL}/api/verification-documents/${detail.selfieUrl}`}
                                 target="_blank"
                                 rel="noopener noreferrer"
                                 className="flex items-center gap-2 text-sm text-blue-600 hover:underline"
