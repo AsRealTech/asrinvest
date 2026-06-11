@@ -60,6 +60,7 @@
   },
   "devDependencies": {
     "@tailwindcss/vite": "^4.0.17",
+    "@tawk.to/tawk-messenger-react": "^2.0.2",
     "@types/node": "^22",
     "@types/react": "^19.0.0",
     "@types/react-dom": "^19.0.0",
